@@ -68,8 +68,8 @@ optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
 #images, labels = next(iter(train_loader))
 #print(model(images).shape)
 
-
-for epoch in range(3):
+model.train()
+for epoch in range(7):
     for images, labels in train_loader:
         scores = model(images)
         loss = loss_fn(scores, labels)
@@ -78,7 +78,20 @@ for epoch in range(3):
         loss.backward()
         optimizer.step()
 
-    print(f"Epoch {epoch + 1}, loss: {loss.item():.4f}")
+    #print(f"Epoch {epoch + 1}, loss: {loss.item():.4f}")
+
+correct = 0
+total = 0
+
+model.eval()
+with torch.no_grad():
+    for images, labels in test_loader:
+        scores = model(images)
+        guesses = scores.argmax(dim=1)
+        correct += (guesses == labels).sum().item()
+        total += labels.size(0)
+
+print(f"Test accuracy: {correct / total * 100:.2f}%")
 
 
 
