@@ -34,7 +34,7 @@ images,labels = next(iter(train_loader))
 
 ## 3 -- creating the model -- 
 
-class net(nn.module):
+class net(nn.Module):
     def __init__(self):
         super().__init__()
         self.layers = nn.Sequential(
@@ -46,6 +46,40 @@ class net(nn.module):
             nn.Linear(100, 10),
 
         )
+
+    def forward(self, x):
+        return self.layers(x)
+
+
+model = net()
+loss_fn = nn.CrossEntropyLoss() #grader for the output
+optimizer = torch.optim.Adam(model.parameters(), lr=0.001) #optimizer for updating the weights of the model
+
+model = net()
+
+loss_fn = nn.CrossEntropyLoss()
+optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
+
+#images, labels = next(iter(train_loader))
+#scores = model(images)
+#loss = loss_fn(scores, labels)
+#print(loss.item())
+
+#images, labels = next(iter(train_loader))
+#print(model(images).shape)
+
+
+for epoch in range(3):
+    for images, labels in train_loader:
+        scores = model(images)
+        loss = loss_fn(scores, labels)
+
+        optimizer.zero_grad()
+        loss.backward()
+        optimizer.step()
+
+    print(f"Epoch {epoch + 1}, loss: {loss.item():.4f}")
+
 
 
 
